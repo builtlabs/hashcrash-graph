@@ -1,0 +1,16 @@
+{
+  "abstract-testnet": {
+    "PlatformInterface": {
+      "address": "0xa3939C5449f70a31B734081528aEd22bDA24815E",
+      "startBlock": 10205734
+    },
+    "HashCrash": {
+      "address": "0x632502068bc8767B81980c3965177C707230671d",
+      "startBlock": 10205737
+    },
+    "HashCrashERC20": {
+      "address": "0x9f496B1272D5aE51B7010ae0BaFB79fa480589d2",
+      "startBlock": 10205742
+    }
+  }
+}

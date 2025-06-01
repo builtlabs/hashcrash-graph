@@ -1,0 +1,136 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: PlatformInterface
+    network: abstract-testnet
+    source:
+      abi: PlatformInterface
+      address: "0xa3939C5449f70a31B734081528aEd22bDA24815E"
+      startBlock: 10205734
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - StartSeason
+        - OwnershipTransferred
+        - PlatformSet
+        - Referral
+        - ReferralRewardSet
+        - RewardClaimed
+        - RewardEarned
+      abis:
+        - name: PlatformInterface
+          file: ./abis/PlatformInterface.json
+      eventHandlers:
+        - event: StartSeason(indexed uint64,address[])
+          handler: handleStartSeason
+        - event: PlatformSet(indexed address)
+          handler: handlePlatformSet
+        - event: Referral(indexed address,indexed address)
+          handler: handleReferral
+        - event: ReferralRewardSet(indexed uint256,uint256)
+          handler: handleReferralRewardSet
+        - event: RewardClaimed(indexed address,indexed address,uint256)
+          handler: handleRewardClaimed
+        - event: RewardEarned(indexed address,indexed address,uint256)
+          handler: handleRewardEarned
+      file: ./src/platform-interface.ts
+  - kind: ethereum
+    name: HashCrash
+    network: abstract-testnet
+    source:
+      abi: HashCrash
+      address: "0x632502068bc8767B81980c3965177C707230671d"
+      startBlock: 10205737
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RoundStarted
+        - RoundEnded
+        - BetPlaced
+        - BetCashoutUpdated
+        - BetCancelled
+        - ActiveUpdated
+        - LootTableUpdated
+        - LiquidityAdded
+        - LiquidityRemoved
+      abis:
+        - name: HashCrash
+          file: ./abis/HashCrash.json
+        - name: LootTable
+          file: ./abis/ILootTable.json
+      eventHandlers:
+        - event: RoundStarted(indexed bytes32,uint64,uint64)
+          handler: handleRoundStarted
+        - event: RoundEnded(indexed bytes32,bytes32,uint64)
+          handler: handleRoundEnded
+        - event: BetPlaced(indexed bytes32,indexed address,uint256,uint64)
+          handler: handleBetPlaced
+        - event: BetCashoutUpdated(indexed bytes32,indexed uint256,uint64)
+          handler: handleBetCashoutUpdated
+        - event: BetCancelled(indexed bytes32,indexed uint256)
+          handler: handleBetCancelled
+        - event: ActiveUpdated(bool)
+          handler: handleActiveUpdated
+        - event: LootTableUpdated(address)
+          handler: handleLootTableUpdated
+        - event: LiquidityAdded(indexed address,uint256,uint256)
+          handler: handleLiquidityAdded
+        - event: LiquidityRemoved(indexed address,uint256,uint256)
+          handler: handleLiquidityRemoved
+      file: ./src/hashcrash-native.ts
+  - kind: ethereum
+    name: HashCrashERC20
+    network: abstract-testnet
+    source:
+      abi: HashCrash
+      address: "0x9f496B1272D5aE51B7010ae0BaFB79fa480589d2"
+      startBlock: 10205742
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RoundStarted
+        - RoundEnded
+        - BetPlaced
+        - BetCashoutUpdated
+        - BetCancelled
+        - ActiveUpdated
+        - LootTableUpdated
+        - LiquidityAdded
+        - LiquidityRemoved
+      abis:
+        - name: HashCrash
+          file: ./abis/HashCrash.json
+        - name: HashCrashERC20
+          file: ./abis/HashCrashERC20.json
+        - name: LootTable
+          file: ./abis/ILootTable.json
+      eventHandlers:
+        - event: RoundStarted(indexed bytes32,uint64,uint64)
+          handler: handleRoundStarted
+        - event: RoundEnded(indexed bytes32,bytes32,uint64)
+          handler: handleRoundEnded
+        - event: BetPlaced(indexed bytes32,indexed address,uint256,uint64)
+          handler: handleBetPlaced
+        - event: BetCashoutUpdated(indexed bytes32,indexed uint256,uint64)
+          handler: handleBetCashoutUpdated
+        - event: BetCancelled(indexed bytes32,indexed uint256)
+          handler: handleBetCancelled
+        - event: ActiveUpdated(bool)
+          handler: handleActiveUpdated
+        - event: LootTableUpdated(address)
+          handler: handleLootTableUpdated
+        - event: LiquidityAdded(indexed address,uint256,uint256)
+          handler: handleLiquidityAdded
+        - event: LiquidityRemoved(indexed address,uint256,uint256)
+          handler: handleLiquidityRemoved
+      file: ./src/hashcrash-erc20.ts

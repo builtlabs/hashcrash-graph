@@ -1,0 +1,1 @@
+All values need to be denominated in eth, so e.g. grind is converted via oracle at the time of the event

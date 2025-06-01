@@ -1,0 +1,297 @@
+enum PERIOD_TYPE {
+  LIFETIME
+  SEASON
+  DAY
+}
+
+type Wallet @entity {
+  id: ID!
+
+  platformUser: PlatformUser
+
+  points: [Points!]! @derivedFrom(field: "wallet")
+  instances: [Player!]! @derivedFrom(field: "wallet")
+  liquidityProviders: [LiquidityProvider!]! @derivedFrom(field: "wallet")
+}
+
+type Token @entity {
+  id: ID!
+
+  hashcrash: HashCrash @derivedFrom(field: "token")
+  platformToken: PlatformToken @derivedFrom(field: "token")
+}
+
+type LootTable @entity {
+  id: ID!
+  length: BigInt!
+  multipliers: [BigInt!]!
+  probabilities: [BigInt!]!
+}
+
+type UniqueChecker @entity {
+  id: ID!
+}
+
+################################################### HashCrash ###################################################
+
+type HashCrash @entity {
+  id: ID!
+
+  token: Token!
+  lootTable: LootTable!
+  liquidity: Liquidity!
+
+  active: Boolean!
+  currentSeason: Season
+
+  rounds: [Round!]! @derivedFrom(field: "hashcrash")
+  players: [Player!]! @derivedFrom(field: "hashcrash")
+  stats: [HashCrashStats!]! @derivedFrom(field: "hashcrash")
+}
+
+type HashCrashStats @entity {
+  id: ID!
+
+  hashcrash: HashCrash!
+
+  periodType: PERIOD_TYPE!
+  periodId: String
+
+  betCount: BigInt!
+  betVolume: BigInt!
+
+  winCount: BigInt!
+  winVolume: BigInt!
+
+  roundCount: BigInt!
+  uniqueUserCount: BigInt!
+}
+
+################################################### Players ###################################################
+
+type Player @entity {
+  id: ID!
+
+  wallet: Wallet!
+  hashcrash: HashCrash!
+
+  bets: [Bet!]! @derivedFrom(field: "player")
+  stats: [PlayerStats!]! @derivedFrom(field: "player")
+}
+
+type PlayerStats @entity {
+  id: ID!
+  player: Player!
+
+  periodType: PERIOD_TYPE!
+  periodId: String
+
+  roundCount: BigInt!
+
+  betCount: BigInt!
+  betVolume: BigInt!
+
+  winCount: BigInt!
+  payoutVolume: BigInt!
+  profitVolume: BigInt!
+
+  largestBet: BigInt!
+  largestPayout: BigInt!
+  largestProfit: BigInt!
+
+  largestMultiplierUsed: BigInt!
+  largestMultiplierWon: BigInt!
+}
+
+################################################### Gameplay ###################################################
+
+type Round @entity {
+  id: ID!
+
+  hashcrash: HashCrash!
+
+  hash: Bytes!
+  hashIndex: BigInt!
+  startBlock: BigInt!
+
+  salt: Bytes
+  deadIndex: BigInt
+
+  nextBetIndex: BigInt!
+  bets: [Bet!]! @derivedFrom(field: "round")
+}
+
+type Bet @entity {
+  id: ID!
+
+  round: Round!
+  player: Player!
+
+  amount: BigInt!
+  multiplier: BigInt!
+  cashoutIndex: BigInt!
+
+  cancelled: Boolean!
+}
+
+################################################### Liquidity ###################################################
+
+type Liquidity @entity {
+  id: ID!
+
+  hashcrash: HashCrash!
+
+  stats: [LiquidityStats!]! @derivedFrom(field: "liquidity")
+  providers: [LiquidityProvider!]! @derivedFrom(field: "liquidity")
+}
+
+type LiquidityStats @entity {
+  id: ID!
+  liquidity: Liquidity!
+
+  periodType: PERIOD_TYPE!
+  periodId: String
+
+  shares: BigInt!
+
+  depositCount: BigInt!
+  depositVolume: BigInt!
+
+  withdrawalCount: BigInt!
+  withdrawalVolume: BigInt!
+}
+
+type LiquidityProvider @entity {
+  id: ID!
+
+  wallet: Wallet!
+  liquidity: Liquidity!
+
+  stats: [LiquidityProviderStats!]! @derivedFrom(field: "liquidityProvider")
+}
+
+type LiquidityProviderStats @entity {
+  id: ID!
+  liquidityProvider: LiquidityProvider!
+
+  periodType: PERIOD_TYPE!
+  periodId: String
+
+  shares: BigInt!
+
+  depositCount: BigInt!
+  depositVolume: BigInt!
+
+  withdrawalCount: BigInt!
+  withdrawalVolume: BigInt!
+}
+
+################################################### PlatformInterface ###################################################
+
+type PlatformInterface @entity {
+  id: ID!
+
+  currentSeason: Season
+  rewardRates: [BigInt!]!
+
+  house: PlatformUser
+  users: [PlatformUser!]! @derivedFrom(field: "platformInterface")
+  tokens: [PlatformToken!]! @derivedFrom(field: "platformInterface")
+}
+
+type PlatformUser @entity {
+  id: ID!
+
+  wallet: Wallet!
+  platformInterface: PlatformInterface!
+
+  referredBy: PlatformUser
+  referrals: [PlatformUser!]! @derivedFrom(field: "referredBy")
+
+  stats: [PlatformUserStats!]! @derivedFrom(field: "platformUser")
+  rewards: [PlatformUserReward!]! @derivedFrom(field: "platformUser")
+}
+
+type PlatformUserStats @entity {
+  id: ID!
+
+  platformUser: PlatformUser!
+
+  periodType: PERIOD_TYPE!
+  periodId: String
+
+  referralCount: BigInt!
+}
+
+type PlatformToken @entity {
+  id: ID!
+
+  token: Token!
+  platformInterface: PlatformInterface!
+
+  stats: [PlatformTokenStats!]! @derivedFrom(field: "platformToken")
+  platformUserRewards: [PlatformUserReward!]! @derivedFrom(field: "platformToken")
+}
+
+type PlatformTokenStats @entity {
+  id: ID!
+
+  platformToken: PlatformToken!
+
+  periodType: PERIOD_TYPE!
+  periodId: String
+
+  feeVolume: BigInt!
+  claimVolume: BigInt!
+}
+
+type PlatformUserReward @entity {
+  id: ID!
+
+  platformUser: PlatformUser!
+  platformToken: PlatformToken!
+
+  stats: [PlatformUserRewardStats!]! @derivedFrom(field: "platformUserReward")
+}
+
+type PlatformUserRewardStats @entity {
+  id: ID!
+
+  platformUserReward: PlatformUserReward!
+
+  periodType: PERIOD_TYPE!
+  periodId: String
+
+  earnings: BigInt!
+  claimed: BigInt!
+}
+
+################################################### Points ###################################################
+
+type Season @entity {
+  id: ID!
+
+  seasonIndex: BigInt!
+
+  startBlock: BigInt!
+  endBlock: BigInt
+
+  points: [Points!]! @derivedFrom(field: "season")
+  hashcrashReferences: [HashCrash!]! @derivedFrom(field: "currentSeason")
+}
+
+type Points @entity {
+  id: ID!
+  wallet: Wallet!
+
+  season: Season
+
+  periodType: PERIOD_TYPE!
+  periodId: String
+  
+  volume: BigInt! # unit: ETH
+  referredVolume: BigInt! # unit: ETH
+  accruedLiquidity: BigInt! # unit: ETH * Blocks
+  latestLiquidity: BigInt!
+  latestLiquidityBlock: BigInt!
+}

@@ -125,13 +125,13 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "level",
+        "name": "index",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "bps",
+        "name": "numerator",
         "type": "uint256"
       }
     ],
@@ -189,6 +189,25 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "season",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "address[]",
+        "name": "gamemodes",
+        "type": "address[]"
+      }
+    ],
+    "name": "StartSeason",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "address[]",
@@ -199,6 +218,19 @@
     "name": "claimRewards",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getNextSeason",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -222,7 +254,7 @@
         "type": "uint256"
       }
     ],
-    "name": "getReferralBPS",
+    "name": "getReferralReward",
     "outputs": [
       {
         "internalType": "uint256",
@@ -360,11 +392,11 @@
       },
       {
         "internalType": "uint256",
-        "name": "_bps",
+        "name": "_numerator",
         "type": "uint256"
       }
     ],
-    "name": "setReferralBPS",
+    "name": "setReferralReward",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -378,6 +410,19 @@
       }
     ],
     "name": "setReferredBy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_gamemodes",
+        "type": "address[]"
+      }
+    ],
+    "name": "startSeason",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -1,8 +1,0 @@
-{
-  "abstract-testnet": {
-    "PlatformInterface": {
-      "address": "0xCEC7e053BA962FE7add4448CE9abc352Db9AAF7c",
-      "startBlock": 10110900
-    }
-  }
-}
