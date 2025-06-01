@@ -1,0 +1,41 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: PlatformInterface
+    network: abstract-testnet
+    source:
+      address: "0xCEC7e053BA962FE7add4448CE9abc352Db9AAF7c"
+      abi: PlatformInterface
+      startBlock: 10110900
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - OwnershipTransferred
+        - PlatformSet
+        - Referral
+        - ReferralRewardSet
+        - RewardClaimed
+        - RewardEarned
+      abis:
+        - name: PlatformInterface
+          file: ./abis/PlatformInterface.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: PlatformSet(indexed address)
+          handler: handlePlatformSet
+        - event: Referral(indexed address,indexed address)
+          handler: handleReferral
+        - event: ReferralRewardSet(indexed uint256,uint256)
+          handler: handleReferralRewardSet
+        - event: RewardClaimed(indexed address,indexed address,uint256)
+          handler: handleRewardClaimed
+        - event: RewardEarned(indexed address,indexed address,uint256)
+          handler: handleRewardEarned
+      file: ./src/platform-interface.ts
