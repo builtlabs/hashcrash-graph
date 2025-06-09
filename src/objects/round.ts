@@ -1,4 +1,4 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { Bytes } from "@graphprotocol/graph-ts";
 import { HashCrash, Round } from "../../generated/schema";
 import { VALUES } from "../helpers";
 

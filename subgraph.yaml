@@ -9,8 +9,8 @@ dataSources:
     network: abstract-testnet
     source:
       abi: PlatformInterface
-      address: "0xa3939C5449f70a31B734081528aEd22bDA24815E"
-      startBlock: 10205734
+      address: "0x5b43562EA28EcAE83bb654d1FE364a08Cf76e03e"
+      startBlock: 10290422
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -45,8 +45,8 @@ dataSources:
     network: abstract-testnet
     source:
       abi: HashCrash
-      address: "0x632502068bc8767B81980c3965177C707230671d"
-      startBlock: 10205737
+      address: "0xF6bD81E7366A9965123AbE41bB191514e794ba72"
+      startBlock: 10290425
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -69,6 +69,8 @@ dataSources:
       eventHandlers:
         - event: RoundStarted(indexed bytes32,uint64,uint64)
           handler: handleRoundStarted
+        - event: RoundAccelerated(indexed bytes32,uint64)
+          handler: handleRoundAccelerated
         - event: RoundEnded(indexed bytes32,bytes32,uint64)
           handler: handleRoundEnded
         - event: BetPlaced(indexed bytes32,indexed address,uint256,uint64)
@@ -91,8 +93,8 @@ dataSources:
     network: abstract-testnet
     source:
       abi: HashCrash
-      address: "0x9f496B1272D5aE51B7010ae0BaFB79fa480589d2"
-      startBlock: 10205742
+      address: "0xe3DF1F8b9F0d8b44D04B973413d4D503A2242Ec7"
+      startBlock: 10290431
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

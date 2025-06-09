@@ -4,6 +4,7 @@ import { addressToId } from "./helpers";
 import { HashCrashERC20 } from "../generated/HashCrashERC20/HashCrashERC20";
 import {
   RoundStarted as RoundStartedEvent,
+  RoundAccelerated as RoundAcceleratedEvent,
   RoundEnded as RoundEndedEvent,
   BetPlaced as BetPlacedEvent,
   BetCashoutUpdated as BetCashoutUpdatedEvent,
@@ -15,6 +16,7 @@ import {
 } from "./../generated/HashCrash/HashCrash";
 import {
   handleRoundStarted as handleRoundStartedBase,
+  handleRoundAccelerated as handleRoundAcceleratedBase,
   handleRoundEnded as handleRoundEndedBase,
   handleBetPlaced as handleBetPlacedBase,
   handleBetCashoutUpdated as handleBetCashoutUpdatedBase,
@@ -28,6 +30,11 @@ import { getOrCreateLiquidity, getOrCreateLootTable, getOrCreateToken } from "./
 export function handleRoundStarted(event: RoundStartedEvent): void {
   const hashcrash = getOrCreateHashCrash(event.address);
   handleRoundStartedBase(hashcrash, event);
+}
+
+export function handleRoundAccelerated(event: RoundAcceleratedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+  handleRoundAcceleratedBase(hashcrash, event);
 }
 
 export function handleRoundEnded(event: RoundEndedEvent): void {

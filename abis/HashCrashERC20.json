@@ -17,6 +17,11 @@
         "type": "address"
       },
       {
+        "internalType": "uint128",
+        "name": "lowLiquidityThreshold_",
+        "type": "uint128"
+      },
+      {
         "internalType": "address",
         "name": "owner_",
         "type": "address"
@@ -126,6 +131,16 @@
       }
     ],
     "name": "SafeERC20FailedOperation",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ValueHolderInsufficientAvailableBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ValueHolderInsufficientStagedBalance",
     "type": "error"
   },
   {
@@ -334,6 +349,25 @@
       },
       {
         "indexed": false,
+        "internalType": "uint64",
+        "name": "startBlock",
+        "type": "uint64"
+      }
+    ],
+    "name": "RoundAccelerated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "roundHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
         "internalType": "bytes32",
         "name": "roundSalt",
         "type": "bytes32"
@@ -374,17 +408,30 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "balance",
-    "outputs": [
+    "anonymous": false,
+    "inputs": [
       {
+        "indexed": false,
         "internalType": "uint256",
-        "name": "",
+        "name": "amount",
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "name": "StagedBalanceDecreased",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "StagedBalanceIncreased",
+    "type": "event"
   },
   {
     "inputs": [
@@ -433,6 +480,19 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAvailableBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -550,12 +610,38 @@
   },
   {
     "inputs": [],
+    "name": "getLowLiquidityThreshold",
+    "outputs": [
+      {
+        "internalType": "uint128",
+        "name": "",
+        "type": "uint128"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getMaxExposureNumerator",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint128",
         "name": "",
-        "type": "uint256"
+        "type": "uint128"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getReducedIntroBlocks",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
       }
     ],
     "stateMutability": "view",
@@ -630,6 +716,19 @@
       }
     ],
     "name": "getShares",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getStagedBalance",
     "outputs": [
       {
         "internalType": "uint256",
@@ -777,12 +876,38 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint128",
+        "name": "_value",
+        "type": "uint128"
+      }
+    ],
+    "name": "setLowLiquidityThreshold",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint128",
         "name": "_numerator",
-        "type": "uint256"
+        "type": "uint128"
       }
     ],
     "name": "setMaxExposure",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "reducedIntroBlocks_",
+        "type": "uint32"
+      }
+    ],
+    "name": "setReducedIntroBlocks",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -2,6 +2,7 @@ import { BigInt } from "@graphprotocol/graph-ts";
 import { HashCrash } from "../generated/schema";
 import {
   RoundStarted as RoundStartedEvent,
+  RoundAccelerated as RoundAcceleratedEvent,
   RoundEnded as RoundEndedEvent,
   BetPlaced as BetPlacedEvent,
   BetCashoutUpdated as BetCashoutUpdatedEvent,
@@ -33,6 +34,12 @@ export function handleRoundStarted(hashcrash: HashCrash, event: RoundStartedEven
   round.startBlock = event.params.startBlock;
   round.save();
 }
+
+export function handleRoundAccelerated(hashcrash: HashCrash, event: RoundAcceleratedEvent): void {
+  const round = getOrCreateRound(hashcrash, event.params.roundHash);
+  round.startBlock = event.params.startBlock;
+  round.save();
+};
 
 export function handleRoundEnded(hashcrash: HashCrash, event: RoundEndedEvent): void {
   const round = getOrCreateRound(hashcrash, event.params.roundHash);
