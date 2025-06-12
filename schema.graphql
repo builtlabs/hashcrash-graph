@@ -117,7 +117,6 @@ type Round @entity {
   salt: Bytes
   deadIndex: BigInt
 
-  nextBetIndex: BigInt!
   bets: [Bet!]! @derivedFrom(field: "round")
 }
 

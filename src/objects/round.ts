@@ -12,7 +12,6 @@ export function getOrCreateRound(hashcrash: HashCrash, hash: Bytes): Round {
     round.hash = hash;
     round.hashIndex = VALUES.ZERO;
     round.startBlock = VALUES.ZERO;
-    round.nextBetIndex = VALUES.ZERO;
     round.save();
   }
 

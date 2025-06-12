@@ -6,6 +6,7 @@ import {
   RoundStarted as RoundStartedEvent,
   RoundAccelerated as RoundAcceleratedEvent,
   RoundEnded as RoundEndedEvent,
+  RoundRefunded as RoundRefundedEvent,
   BetPlaced as BetPlacedEvent,
   BetCashoutUpdated as BetCashoutUpdatedEvent,
   BetCancelled as BetCancelledEvent,
@@ -18,6 +19,7 @@ import {
   handleRoundStarted as handleRoundStartedBase,
   handleRoundAccelerated as handleRoundAcceleratedBase,
   handleRoundEnded as handleRoundEndedBase,
+  handleRoundRefunded as handleRoundRefundedBase,
   handleBetPlaced as handleBetPlacedBase,
   handleBetCashoutUpdated as handleBetCashoutUpdatedBase,
   handleBetCancelled as handleBetCancelledBase,
@@ -40,6 +42,11 @@ export function handleRoundAccelerated(event: RoundAcceleratedEvent): void {
 export function handleRoundEnded(event: RoundEndedEvent): void {
   const hashcrash = getOrCreateHashCrash(event.address);
   handleRoundEndedBase(hashcrash, event);
+}
+
+export function handleRoundRefunded(event: RoundRefundedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+  handleRoundRefundedBase(hashcrash, event);
 }
 
 export function handleBetPlaced(event: BetPlacedEvent): void {

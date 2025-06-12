@@ -4,6 +4,7 @@ import {
   RoundStarted as RoundStartedEvent,
   RoundAccelerated as RoundAcceleratedEvent,
   RoundEnded as RoundEndedEvent,
+  RoundRefunded as RoundRefundedEvent,
   BetPlaced as BetPlacedEvent,
   BetCashoutUpdated as BetCashoutUpdatedEvent,
   BetCancelled as BetCancelledEvent,
@@ -78,20 +79,23 @@ export function handleRoundEnded(hashcrash: HashCrash, event: RoundEndedEvent): 
   hashcrashStats.save();
 }
 
+export function handleRoundRefunded(hashcrash: HashCrash, event: RoundRefundedEvent): void {
+  const round = getOrCreateRound(hashcrash, event.params.roundHash);
+  round.salt = event.params.roundSalt;
+  round.save();
+}
+
 export function handleBetPlaced(hashcrash: HashCrash, event: BetPlacedEvent): void {
   const lootTable = getLootTable(hashcrash.lootTable);
 
   const round = getOrCreateRound(hashcrash, event.params.roundHash);
   const player = getOrCreatePlayer(hashcrash, event.params.user);
 
-  const bet = getOrCreateBet(round, player, round.nextBetIndex);
+  const bet = getOrCreateBet(round, player, event.params.index);
   bet.amount = event.params.amount;
   bet.multiplier = lootTable.multipliers[event.params.cashoutIndex.toI32()];
   bet.cashoutIndex = event.params.cashoutIndex;
   bet.save();
-
-  round.nextBetIndex = round.nextBetIndex.plus(BigInt.fromI32(1));
-  round.save();
 }
 
 export function handleBetCashoutUpdated(hashcrash: HashCrash, event: BetCashoutUpdatedEvent): void {

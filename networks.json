@@ -1,16 +1,16 @@
 {
   "abstract-testnet": {
     "PlatformInterface": {
-      "address": "0x5b43562EA28EcAE83bb654d1FE364a08Cf76e03e",
-      "startBlock": 10290422
+      "address": "0xa156b287e59e3B43A57Fb724cF6a09d31Ec1C9f7",
+      "startBlock": 10338003
     },
     "HashCrash": {
-      "address": "0xF6bD81E7366A9965123AbE41bB191514e794ba72",
-      "startBlock": 10290425
+      "address": "0xFc6cC693c91bF5734406f74884eEF5856130Db2A",
+      "startBlock": 10338006
     },
     "HashCrashERC20": {
-      "address": "0xe3DF1F8b9F0d8b44D04B973413d4D503A2242Ec7",
-      "startBlock": 10290431
+      "address": "0xf255b05D0E76e22F1a570eb1726C14F0c0d78dc5",
+      "startBlock": 10338012
     }
   }
 }
