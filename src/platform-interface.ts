@@ -1,6 +1,7 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 import {
-  StartSeason as StartSeasonEvent,
+  SeasonStarted as SeasonStartedEvent,
+  SeasonEnded as SeasonEndedEvent,
   PlatformSet as PlatformSetEvent,
   Referral as ReferralEvent,
   ReferralRewardSet as ReferralRewardSetEvent,
@@ -13,7 +14,6 @@ import {
   getOrCreatePlatformInterface,
   getOrCreateSeason,
   getOrCreateToken,
-  getSeason,
   getWallet,
   PlatformToken,
   PlatformUser,
@@ -22,34 +22,42 @@ import {
 } from "./objects";
 import { addressToId } from "./helpers";
 
-export function handleStartSeason(event: StartSeasonEvent): void {
+export function handleSeasonStarted(event: SeasonStartedEvent): void {
   const platformInterface = getOrCreatePlatformInterface(event.address);
 
-  if (platformInterface.currentSeason != null) {
-    const previousSeason = getSeason(platformInterface.currentSeason as string);
-    previousSeason.endBlock = event.block.number;
-    previousSeason.save();
+  const season = getOrCreateSeason(platformInterface, event.params.season);
+  season.startBlock = event.block.number;
+  season.save();
 
-    const previousGameModes = previousSeason.hashcrashReferences.load();
-    for (let i = 0; i < previousGameModes.length; i++) {
-      previousGameModes[i].currentSeason = null;
-      previousGameModes[i].save();
-    }
-  }
-
-  const newSeason = getOrCreateSeason(platformInterface, event.params.season);
-  newSeason.startBlock = event.block.number;
-  newSeason.save();
+  platformInterface.currentSeason = season.id;
+  platformInterface.save();
 
   for (let i = 0; i < event.params.gamemodes.length; i++) {
     const hashcrash = getHashcrash(addressToId(event.params.gamemodes[i]));
-    hashcrash.currentSeason = newSeason.id;
+    hashcrash.currentSeason = season.id;
     hashcrash.save();
 
     const providers = getLiquidity(hashcrash.liquidity).providers.load();
     for (let j = 0; j < providers.length; j++) {
       new Points(hashcrash, getWallet(providers[j].wallet), event.block.timestamp);
     }
+  }
+}
+
+export function handleSeasonEnded(event: SeasonEndedEvent): void {
+  const platformInterface = getOrCreatePlatformInterface(event.address);
+  platformInterface.currentSeason = null;
+  platformInterface.save();
+
+  const season = getOrCreateSeason(platformInterface, event.params.season);
+  season.endBlock = event.block.number;
+  season.save();
+
+  // TODO: This removes the history, which it probably shouldn't.
+  const hashcrashReferences = season.hashcrashReferences.load();
+  for (let i = 0; i < hashcrashReferences.length; i++) {
+    hashcrashReferences[i].currentSeason = null;
+    hashcrashReferences[i].save();
   }
 }
 

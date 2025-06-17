@@ -37,12 +37,12 @@ export class Points {
     }
   }
 
-  public accrueLiquidityPoints(provider: LiquidityProvider, blockNumber: BigInt, timestamp: BigInt): void {
+  public accrueLiquidityPoints(provider: LiquidityProvider, blockNumber: BigInt): void {
     for (let i = 0; i < this.stats.length; i++) {
       const pointStats = this.stats[i];
       if (
-        pointStats.latestLiquidity.gt(BigInt.fromI32(0)) &&
-        pointStats.latestLiquidityBlock.gt(BigInt.fromI32(0)) &&
+        pointStats.latestLiquidity.gt(VALUES.ZERO) &&
+        pointStats.latestLiquidityBlock.gt(VALUES.ZERO) &&
         pointStats.latestLiquidityBlock.lt(blockNumber)
       ) {
         const diff = blockNumber.minus(pointStats.latestLiquidityBlock);

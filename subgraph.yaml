@@ -9,14 +9,15 @@ dataSources:
     network: abstract-testnet
     source:
       abi: PlatformInterface
-      address: "0xa156b287e59e3B43A57Fb724cF6a09d31Ec1C9f7"
-      startBlock: 10338003
+      address: "0x5988d29fd013C17E6d826b8C5947c469392c0aed"
+      startBlock: 10401747
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - StartSeason
+        - SeasonStarted
+        - SeasonEnded
         - OwnershipTransferred
         - PlatformSet
         - Referral
@@ -27,8 +28,10 @@ dataSources:
         - name: PlatformInterface
           file: ./abis/PlatformInterface.json
       eventHandlers:
-        - event: StartSeason(indexed uint64,address[])
-          handler: handleStartSeason
+        - event: SeasonStarted(indexed uint64,address[])
+          handler: handleSeasonStarted
+        - event: SeasonEnded(indexed uint64)
+          handler: handleSeasonEnded
         - event: PlatformSet(indexed address)
           handler: handlePlatformSet
         - event: Referral(indexed address,indexed address)
@@ -41,19 +44,21 @@ dataSources:
           handler: handleRewardEarned
       file: ./src/platform-interface.ts
   - kind: ethereum
-    name: HashCrash
+    name: HashCrashWeth
     network: abstract-testnet
     source:
       abi: HashCrash
-      address: "0xFc6cC693c91bF5734406f74884eEF5856130Db2A"
-      startBlock: 10338006
+      address: "0x62A157d3B7ac31abCE24D3341996A2e550BbcC19"
+      startBlock: 10401750
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - RoundStarted
+        - RoundAccelerated
         - RoundEnded
+        - RoundRefunded
         - BetPlaced
         - BetCashoutUpdated
         - BetCancelled
@@ -73,7 +78,7 @@ dataSources:
           handler: handleRoundAccelerated
         - event: RoundEnded(indexed bytes32,bytes32,uint64)
           handler: handleRoundEnded
-        - event: RoundRefunded(indexed bytes32,bytes32)
+        - event: RoundRefunded(indexed bytes32)
           handler: handleRoundRefunded
         - event: BetPlaced(indexed bytes32,indexed uint256,indexed address,uint256,uint64)
           handler: handleBetPlaced
@@ -89,21 +94,23 @@ dataSources:
           handler: handleLiquidityAdded
         - event: LiquidityRemoved(indexed address,uint256,uint256)
           handler: handleLiquidityRemoved
-      file: ./src/hashcrash-native.ts
+      file: ./src/hashcrash.ts
   - kind: ethereum
-    name: HashCrashERC20
+    name: HashCrashGrind
     network: abstract-testnet
     source:
       abi: HashCrash
-      address: "0xf255b05D0E76e22F1a570eb1726C14F0c0d78dc5"
-      startBlock: 10338012
+      address: "0x0C3887A1B6877C4373bAAfab0D78BE3c25Ae07C8"
+      startBlock: 10401757
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - RoundStarted
+        - RoundAccelerated
         - RoundEnded
+        - RoundRefunded
         - BetPlaced
         - BetCashoutUpdated
         - BetCancelled
@@ -114,8 +121,6 @@ dataSources:
       abis:
         - name: HashCrash
           file: ./abis/HashCrash.json
-        - name: HashCrashERC20
-          file: ./abis/HashCrashERC20.json
         - name: LootTable
           file: ./abis/ILootTable.json
       eventHandlers:
@@ -125,7 +130,7 @@ dataSources:
           handler: handleRoundAccelerated
         - event: RoundEnded(indexed bytes32,bytes32,uint64)
           handler: handleRoundEnded
-        - event: RoundRefunded(indexed bytes32,bytes32)
+        - event: RoundRefunded(indexed bytes32)
           handler: handleRoundRefunded
         - event: BetPlaced(indexed bytes32,indexed uint256,indexed address,uint256,uint64)
           handler: handleBetPlaced
@@ -141,4 +146,4 @@ dataSources:
           handler: handleLiquidityAdded
         - event: LiquidityRemoved(indexed address,uint256,uint256)
           handler: handleLiquidityRemoved
-      file: ./src/hashcrash-erc20.ts
+      file: ./src/hashcrash.ts

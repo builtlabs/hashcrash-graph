@@ -1,7 +1,7 @@
 import { addressToId } from "../helpers";
 import { Address } from "@graphprotocol/graph-ts";
 import { LootTable } from "../../generated/schema";
-import { LootTable as LootTableContract } from "../../generated/HashCrashERC20/LootTable";
+import { LootTable as LootTableContract } from "../../generated/HashCrashGrind/LootTable";
 
 export function getLootTable(id: string): LootTable {
   const lootTable = LootTable.load(id);

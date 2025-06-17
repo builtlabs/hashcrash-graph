@@ -8,6 +8,11 @@
       },
       {
         "internalType": "address",
+        "name": "weth_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "owner_",
         "type": "address"
       }
@@ -22,12 +27,27 @@
   },
   {
     "inputs": [],
-    "name": "FailedToSendNativeError",
+    "name": "InvalidAddressError",
     "type": "error"
   },
   {
     "inputs": [],
     "name": "InvalidValueError",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NativeToWrappedFailed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NoEtherToWrap",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotCurrentSeasonError",
     "type": "error"
   },
   {
@@ -50,11 +70,6 @@
       }
     ],
     "name": "OwnableUnauthorizedAccount",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ReservedIndexError",
     "type": "error"
   },
   {
@@ -196,6 +211,19 @@
         "internalType": "uint64",
         "name": "season",
         "type": "uint64"
+      }
+    ],
+    "name": "SeasonEnded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "season",
+        "type": "uint64"
       },
       {
         "indexed": false,
@@ -204,7 +232,7 @@
         "type": "address[]"
       }
     ],
-    "name": "StartSeason",
+    "name": "SeasonStarted",
     "type": "event"
   },
   {
@@ -222,12 +250,19 @@
   },
   {
     "inputs": [],
+    "name": "endSeason",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getNextSeason",
     "outputs": [
       {
-        "internalType": "uint64",
+        "internalType": "uint48",
         "name": "",
-        "type": "uint64"
+        "type": "uint48"
       }
     ],
     "stateMutability": "view",
@@ -334,6 +369,19 @@
   },
   {
     "inputs": [],
+    "name": "getWETH",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "owner",
     "outputs": [
       {
@@ -358,9 +406,9 @@
         "type": "uint256"
       }
     ],
-    "name": "receiveToken",
+    "name": "receiveFee",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -418,7 +466,7 @@
     "inputs": [
       {
         "internalType": "address[]",
-        "name": "_gamemodes",
+        "name": "gamemodes_",
         "type": "address[]"
       }
     ],
@@ -439,9 +487,5 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  },
-  {
-    "stateMutability": "payable",
-    "type": "receive"
   }
 ]

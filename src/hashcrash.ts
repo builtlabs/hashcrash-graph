@@ -1,5 +1,4 @@
 import { BigInt } from "@graphprotocol/graph-ts";
-import { HashCrash } from "../generated/schema";
 import {
   RoundStarted as RoundStartedEvent,
   RoundAccelerated as RoundAcceleratedEvent,
@@ -8,15 +7,17 @@ import {
   BetPlaced as BetPlacedEvent,
   BetCashoutUpdated as BetCashoutUpdatedEvent,
   BetCancelled as BetCancelledEvent,
+  ActiveUpdated as ActiveUpdatedEvent,
   LootTableUpdated as LootTableUpdatedEvent,
   LiquidityAdded as LiquidityAddedEvent,
   LiquidityRemoved as LiquidityRemovedEvent,
-} from "./../generated/HashCrash/HashCrash";
+} from "./../generated/HashCrashGrind/HashCrash";
 import {
   accrueVolumePoints,
   getBet,
   getLootTable,
   getOrCreateBet,
+  getOrCreateHashCrash,
   getOrCreateLootTable,
   getOrCreatePlayer,
   getOrCreateRound,
@@ -28,21 +29,28 @@ import {
 } from "./objects";
 import { HashCrashStats } from "./stats/hashcrash-stats";
 import { PlayerStats } from "./stats/player-stats";
+import { VALUES } from "./helpers";
 
-export function handleRoundStarted(hashcrash: HashCrash, event: RoundStartedEvent): void {
+export function handleRoundStarted(event: RoundStartedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+
   const round = getOrCreateRound(hashcrash, event.params.roundHash);
   round.hashIndex = event.params.hashIndex;
   round.startBlock = event.params.startBlock;
   round.save();
 }
 
-export function handleRoundAccelerated(hashcrash: HashCrash, event: RoundAcceleratedEvent): void {
+export function handleRoundAccelerated(event: RoundAcceleratedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+
   const round = getOrCreateRound(hashcrash, event.params.roundHash);
   round.startBlock = event.params.startBlock;
   round.save();
-};
+}
 
-export function handleRoundEnded(hashcrash: HashCrash, event: RoundEndedEvent): void {
+export function handleRoundEnded(event: RoundEndedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+
   const round = getOrCreateRound(hashcrash, event.params.roundHash);
   round.salt = event.params.roundSalt;
   round.deadIndex = event.params.deadIndex;
@@ -79,13 +87,18 @@ export function handleRoundEnded(hashcrash: HashCrash, event: RoundEndedEvent): 
   hashcrashStats.save();
 }
 
-export function handleRoundRefunded(hashcrash: HashCrash, event: RoundRefundedEvent): void {
+export function handleRoundRefunded(event: RoundRefundedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+  hashcrash.active = false;
+  hashcrash.save();
+
   const round = getOrCreateRound(hashcrash, event.params.roundHash);
-  round.salt = event.params.roundSalt;
+  round.startBlock = VALUES.ZERO;
   round.save();
 }
 
-export function handleBetPlaced(hashcrash: HashCrash, event: BetPlacedEvent): void {
+export function handleBetPlaced(event: BetPlacedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
   const lootTable = getLootTable(hashcrash.lootTable);
 
   const round = getOrCreateRound(hashcrash, event.params.roundHash);
@@ -98,7 +111,8 @@ export function handleBetPlaced(hashcrash: HashCrash, event: BetPlacedEvent): vo
   bet.save();
 }
 
-export function handleBetCashoutUpdated(hashcrash: HashCrash, event: BetCashoutUpdatedEvent): void {
+export function handleBetCashoutUpdated(event: BetCashoutUpdatedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
   const round = getOrCreateRound(hashcrash, event.params.roundHash);
   const lootTable = getLootTable(hashcrash.lootTable);
 
@@ -108,7 +122,8 @@ export function handleBetCashoutUpdated(hashcrash: HashCrash, event: BetCashoutU
   bet.save();
 }
 
-export function handleBetCancelled(hashcrash: HashCrash, event: BetCancelledEvent): void {
+export function handleBetCancelled(event: BetCancelledEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
   const round = getOrCreateRound(hashcrash, event.params.roundHash);
 
   const bet = getBet(round, event.params.index);
@@ -116,17 +131,28 @@ export function handleBetCancelled(hashcrash: HashCrash, event: BetCancelledEven
   bet.save();
 }
 
-export function handleLootTableUpdated(hashcrash: HashCrash, event: LootTableUpdatedEvent): void {
+export function handleActiveUpdated(event: ActiveUpdatedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+  hashcrash.active = event.params.active;
+  hashcrash.save();
+}
+
+export function handleLootTableUpdated(event: LootTableUpdatedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
   const lootTable = getOrCreateLootTable(event.params.lootTable);
 
   hashcrash.lootTable = lootTable.id;
   hashcrash.save();
 }
 
-export function handleLiquidityAdded(hashcrash: HashCrash, event: LiquidityAddedEvent): void {
+export function handleLiquidityAdded(event: LiquidityAddedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+
   const hashCrashStats = new HashCrashStats(hashcrash, event.block.timestamp);
   hashCrashStats.registerUserAddress(event.params.user);
   hashCrashStats.save();
+  
+  const userPoints = new Points(hashcrash, getOrCreateWallet(event.params.user), event.block.timestamp);
 
   const liquidity = new Liquidity(hashcrash, event.block.timestamp);
   liquidity.handleDeposit(event.params.shareDelta, event.params.tokenDelta);
@@ -136,15 +162,18 @@ export function handleLiquidityAdded(hashcrash: HashCrash, event: LiquidityAdded
   liquidityProvider.handleDeposit(event.params.shareDelta, event.params.tokenDelta);
   liquidityProvider.save();
 
-  const userPoints = new Points(hashcrash, getOrCreateWallet(event.params.user), event.block.timestamp);
-  userPoints.accrueLiquidityPoints(liquidityProvider, event.block.number, event.block.timestamp);
+  userPoints.accrueLiquidityPoints(liquidityProvider, event.block.number);
   userPoints.save();
 }
 
-export function handleLiquidityRemoved(hashcrash: HashCrash, event: LiquidityRemovedEvent): void {
+export function handleLiquidityRemoved(event: LiquidityRemovedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+
   const hashCrashStats = new HashCrashStats(hashcrash, event.block.timestamp);
   hashCrashStats.registerUserAddress(event.params.user);
   hashCrashStats.save();
+
+  const userPoints = new Points(hashcrash, getOrCreateWallet(event.params.user), event.block.timestamp);
 
   const liquidity = new Liquidity(hashcrash, event.block.timestamp);
   liquidity.handleWithdrawal(event.params.shareDelta, event.params.tokenDelta);
@@ -153,8 +182,7 @@ export function handleLiquidityRemoved(hashcrash: HashCrash, event: LiquidityRem
   const liquidityProvider = new LiquidityProvider(hashcrash, liquidity.id, event.params.user, event.block.timestamp);
   liquidityProvider.handleWithdrawal(event.params.shareDelta, event.params.tokenDelta);
   liquidityProvider.save();
-
-  const userPoints = new Points(hashcrash, getOrCreateWallet(event.params.user), event.block.timestamp);
-  userPoints.accrueLiquidityPoints(liquidityProvider, event.block.number, event.block.timestamp);
+  
+  userPoints.accrueLiquidityPoints(liquidityProvider, event.block.number);
   userPoints.save();
 }

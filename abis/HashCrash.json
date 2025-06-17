@@ -16,12 +16,27 @@
   },
   {
     "inputs": [],
+    "name": "InsufficientAvailableBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "InsufficientLiquidity",
     "type": "error"
   },
   {
     "inputs": [],
     "name": "InsufficientShares",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InsufficientStagedBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidCancelReturnNumeratorError",
     "type": "error"
   },
   {
@@ -41,7 +56,17 @@
   },
   {
     "inputs": [],
-    "name": "InvalidValue",
+    "name": "InvalidRescue",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "LiquidityQueueFull",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NativeRescueFailed",
     "type": "error"
   },
   {
@@ -52,6 +77,11 @@
   {
     "inputs": [],
     "name": "NotHashProducerError",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OneChangePerRound",
     "type": "error"
   },
   {
@@ -78,6 +108,11 @@
   },
   {
     "inputs": [],
+    "name": "RoundFullError",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "RoundInProgressError",
     "type": "error"
   },
@@ -92,13 +127,19 @@
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "ValueHolderInsufficientAvailableBalance",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "SafeERC20FailedOperation",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "ValueHolderInsufficientStagedBalance",
+    "name": "ValueBelowMinimum",
     "type": "error"
   },
   {
@@ -275,7 +316,7 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "contract ILootTable",
+        "internalType": "address",
         "name": "lootTable",
         "type": "address"
       }
@@ -353,12 +394,6 @@
         "indexed": true,
         "internalType": "bytes32",
         "name": "roundHash",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "roundSalt",
         "type": "bytes32"
       }
     ],
@@ -457,6 +492,13 @@
   },
   {
     "inputs": [],
+    "name": "emergencyRefund",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getActive",
     "outputs": [
       {
@@ -497,6 +539,82 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getBet",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "user",
+            "type": "address"
+          },
+          {
+            "internalType": "uint64",
+            "name": "cashoutIndex",
+            "type": "uint64"
+          },
+          {
+            "internalType": "bool",
+            "name": "cancelled",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct HashCrash.BetOutput",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBets",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "user",
+            "type": "address"
+          },
+          {
+            "internalType": "uint64",
+            "name": "cashoutIndex",
+            "type": "uint64"
+          },
+          {
+            "internalType": "bool",
+            "name": "cancelled",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct HashCrash.BetOutput[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "_user",
         "type": "address"
@@ -527,9 +645,61 @@
             "type": "bool"
           }
         ],
-        "internalType": "struct HashCrash.Bet[]",
+        "internalType": "struct HashCrash.BetOutput[]",
         "name": "",
         "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBetsLength",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBlockHashes",
+    "outputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "",
+        "type": "bytes32[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getCancelReturnNumerator",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getHashIndex",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
       }
     ],
     "stateMutability": "view",
@@ -551,6 +721,25 @@
   {
     "inputs": [],
     "name": "getIntroBlocks",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getLastUpdated",
     "outputs": [
       {
         "internalType": "uint64",
@@ -596,7 +785,7 @@
     "name": "getLootTable",
     "outputs": [
       {
-        "internalType": "contract ILootTable",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -632,6 +821,19 @@
   },
   {
     "inputs": [],
+    "name": "getMinimum",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getReducedIntroBlocks",
     "outputs": [
       {
@@ -645,8 +847,26 @@
   },
   {
     "inputs": [],
+    "name": "getRoundHash",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getRoundInfo",
     "outputs": [
+      {
+        "internalType": "bool",
+        "name": "active_",
+        "type": "bool"
+      },
       {
         "internalType": "uint64",
         "name": "hashIndex_",
@@ -656,6 +876,16 @@
         "internalType": "uint64",
         "name": "startBlock_",
         "type": "uint64"
+      },
+      {
+        "internalType": "contract ILootTable",
+        "name": "lootTable_",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimum_",
+        "type": "uint256"
       },
       {
         "internalType": "uint256",
@@ -690,7 +920,7 @@
             "type": "bool"
           }
         ],
-        "internalType": "struct HashCrash.Bet[]",
+        "internalType": "struct HashCrash.BetOutput[]",
         "name": "bets_",
         "type": "tuple[]"
       },
@@ -698,6 +928,19 @@
         "internalType": "bytes32[]",
         "name": "blockHashes_",
         "type": "bytes32[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRoundStartBlock",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
       }
     ],
     "stateMutability": "view",
@@ -740,7 +983,7 @@
     "name": "getStagedLootTable",
     "outputs": [
       {
-        "internalType": "contract ILootTable",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -793,26 +1036,21 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "_salt",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "_nextHash",
-        "type": "bytes32"
-      }
-    ],
-    "name": "refund",
+    "inputs": [],
+    "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "renounceOwnership",
+    "inputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "_toRescue",
+        "type": "address"
+      }
+    ],
+    "name": "rescueTokens",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -851,6 +1089,19 @@
   {
     "inputs": [
       {
+        "internalType": "uint32",
+        "name": "cancelReturnNumerator_",
+        "type": "uint32"
+      }
+    ],
+    "name": "setCancelReturnNumerator",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "hashProducer_",
         "type": "address"
@@ -877,7 +1128,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ILootTable",
+        "internalType": "address",
         "name": "lootTable_",
         "type": "address"
       }
@@ -916,6 +1167,19 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_minimumValue",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMinimum",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint32",
         "name": "reducedIntroBlocks_",
         "type": "uint32"
@@ -924,6 +1188,19 @@
     "name": "setReducedIntroBlocks",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "token",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
