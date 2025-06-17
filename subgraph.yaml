@@ -9,8 +9,8 @@ dataSources:
     network: abstract-testnet
     source:
       abi: PlatformInterface
-      address: "0x5988d29fd013C17E6d826b8C5947c469392c0aed"
-      startBlock: 10401747
+      address: "0x96157f0c4711fec2e06859a48A4C5FBF5251FCDE"
+      startBlock: 10415514
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -48,8 +48,8 @@ dataSources:
     network: abstract-testnet
     source:
       abi: HashCrash
-      address: "0x62A157d3B7ac31abCE24D3341996A2e550BbcC19"
-      startBlock: 10401750
+      address: "0x3b977262BEBcA31C30e6F0233ad44F08B1d812c0"
+      startBlock: 10415516
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -100,8 +100,8 @@ dataSources:
     network: abstract-testnet
     source:
       abi: HashCrash
-      address: "0x0C3887A1B6877C4373bAAfab0D78BE3c25Ae07C8"
-      startBlock: 10401757
+      address: "0x39E73A58EE058830E94eab7FCB8AAB0D2a8522c2"
+      startBlock: 10415524
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
