@@ -1,16 +1,12 @@
 {
   "abstract-mainnet": {
     "PlatformInterface": {
-      "address": "0x637a24CbE127B4eA84A2A584AF09F132Ac33Bde1",
-      "startBlock": 12216910
+      "address": "0x812aBb888De12cbCE6Ff89b017aa408f0a438d09",
+      "startBlock": 12223231
     },
     "HashCrashWeth": {
-      "address": "0x2e428A054e37E65e03621B2016414d1bbA1433f7",
-      "startBlock": 12216914
-    },
-    "HashCrashGrind": {
-      "address": "0xEA0A001466Bd8B5bE27bf3BCF94caBd52bEe130C",
-      "startBlock": 12216918
+      "address": "0xA8c6862A4aD6aB89f72Ec75651AC21d0ec9D5BDe",
+      "startBlock": 12223538
     }
   },
   "abstract-testnet": {

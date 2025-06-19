@@ -124,8 +124,8 @@ type Round @entity {
   salt: Bytes
   deadIndex: BigInt
   multiplier: BigInt
+  lootTable: LootTable
   proof: Bytes
-  hashes: [Bytes!]
 
   bets: [Bet!]! @derivedFrom(field: "round")
 }
