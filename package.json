@@ -5,7 +5,7 @@
     "codegen": "graph codegen",
     "build:dev": "graph build --network abstract-testnet",
     "build:main": "graph build --network abstract-mainnet",
-    "deploy": "dotenv -e .env -- powershell -Command \"graph deploy hashcrash --version-label v0.2.6 --node https://subgraphs.alchemy.com/api/subgraphs/deploy --deploy-key $env:DEPLOY_KEY --ipfs https://ipfs.satsuma.xyz\""
+    "deploy": "dotenv -e .env -- powershell -Command \"graph deploy lemonade --version-label v0.0.2 --node https://subgraphs.alchemy.com/api/subgraphs/deploy --deploy-key $env:DEPLOY_KEY --ipfs https://ipfs.satsuma.xyz\""
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.68.5",

@@ -13,6 +13,10 @@ export function getLootTable(id: string): LootTable {
   return lootTable as LootTable;
 }
 
+export function getLootTableContract(lootTable: LootTable): LootTableContract {
+  return LootTableContract.bind(Address.fromString(lootTable.id));
+}
+
 export function getOrCreateLootTable(address: Address): LootTable {
   const id = addressToId(address);
 

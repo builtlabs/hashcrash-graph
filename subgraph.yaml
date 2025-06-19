@@ -9,8 +9,8 @@ dataSources:
     network: abstract-mainnet
     source:
       abi: PlatformInterface
-      address: "0x62c17Fe0C5B66292B790bB84137680b33381ED0d"
-      startBlock: 12115062
+      address: "0x637a24CbE127B4eA84A2A584AF09F132Ac33Bde1"
+      startBlock: 12216910
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -48,8 +48,8 @@ dataSources:
     network: abstract-mainnet
     source:
       abi: HashCrash
-      address: "0x76d75Eb68B29cb69a7f0846D317b94237203A1D6"
-      startBlock: 12115068
+      address: "0x2e428A054e37E65e03621B2016414d1bbA1433f7"
+      startBlock: 12216914
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -72,11 +72,11 @@ dataSources:
         - name: LootTable
           file: ./abis/ILootTable.json
       eventHandlers:
-        - event: RoundStarted(indexed bytes32,uint64,uint64)
+        - event: RoundStarted(indexed bytes32,uint64,uint64,uint256)
           handler: handleRoundStarted
         - event: RoundAccelerated(indexed bytes32,uint64)
           handler: handleRoundAccelerated
-        - event: RoundEnded(indexed bytes32,bytes32,uint64)
+        - event: RoundEnded(indexed bytes32,bytes32,uint64,bytes32)
           handler: handleRoundEnded
         - event: RoundRefunded(indexed bytes32)
           handler: handleRoundRefunded
@@ -100,8 +100,8 @@ dataSources:
     network: abstract-mainnet
     source:
       abi: HashCrash
-      address: "0x5B5e7DA825b6d421274b5E74402A660fAa8fdd49"
-      startBlock: 12115072
+      address: "0xEA0A001466Bd8B5bE27bf3BCF94caBd52bEe130C"
+      startBlock: 12216918
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -124,11 +124,11 @@ dataSources:
         - name: LootTable
           file: ./abis/ILootTable.json
       eventHandlers:
-        - event: RoundStarted(indexed bytes32,uint64,uint64)
+        - event: RoundStarted(indexed bytes32,uint64,uint64,uint256)
           handler: handleRoundStarted
         - event: RoundAccelerated(indexed bytes32,uint64)
           handler: handleRoundAccelerated
-        - event: RoundEnded(indexed bytes32,bytes32,uint64)
+        - event: RoundEnded(indexed bytes32,bytes32,uint64,bytes32)
           handler: handleRoundEnded
         - event: RoundRefunded(indexed bytes32)
           handler: handleRoundRefunded

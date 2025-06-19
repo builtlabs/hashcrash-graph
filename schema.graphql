@@ -42,6 +42,10 @@ type HashCrash @entity {
   liquidity: Liquidity!
 
   active: Boolean!
+  # hashProducer: Bytes! TODO
+  # introBlocks: BigInt!
+  # reducedIntroBlocks: BigInt!
+  # cancelReturnNumerator: BigInt!
   currentSeason: Season
 
   rounds: [Round!]! @derivedFrom(field: "hashcrash")
@@ -114,9 +118,14 @@ type Round @entity {
   hashIndex: BigInt!
   startBlock: BigInt!
 
+  # usedLiquidity: BigInt! TODO
+  initialLiquidity: BigInt!
+
   salt: Bytes
   deadIndex: BigInt
   multiplier: BigInt
+  proof: Bytes
+  hashes: [Bytes!]
 
   bets: [Bet!]! @derivedFrom(field: "round")
 }
@@ -140,6 +149,9 @@ type Liquidity @entity {
   id: ID!
 
   hashcrash: HashCrash!
+
+  # maxExposure: BigInt TODO
+  # lowLiquidityThreshold: BigInt
 
   stats: [LiquidityStats!]! @derivedFrom(field: "liquidity")
   providers: [LiquidityProvider!]! @derivedFrom(field: "liquidity")

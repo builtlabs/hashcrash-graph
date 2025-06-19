@@ -1,21 +1,37 @@
 [
   {
     "inputs": [],
-    "name": "BetCancelledError",
+    "name": "AlreadyCashedOut",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "BetNotFoundError",
+    "name": "BetIsCancelled",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "BetNotYoursError",
+    "name": "BetNotFound",
     "type": "error"
   },
   {
     "inputs": [],
+    "name": "BetNotYours",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "have",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "need",
+        "type": "uint256"
+      }
+    ],
     "name": "InsufficientAvailableBalance",
     "type": "error"
   },
@@ -30,33 +46,52 @@
     "type": "error"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "have",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "need",
+        "type": "uint256"
+      }
+    ],
     "name": "InsufficientStagedBalance",
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "InvalidCancelReturnNumeratorError",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "InvalidAddress",
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "InvalidCashoutIndexError",
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "value",
+        "type": "bytes32"
+      }
+    ],
+    "name": "InvalidBytes",
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "InvalidHashError",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "InvalidMaxExposure",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "InvalidRescue",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "InvalidValue",
     "type": "error"
   },
   {
@@ -66,17 +101,12 @@
   },
   {
     "inputs": [],
-    "name": "NativeRescueFailed",
+    "name": "NotActive",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "NotActiveError",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "NotHashProducerError",
+    "name": "NotHashProducer",
     "type": "error"
   },
   {
@@ -108,22 +138,22 @@
   },
   {
     "inputs": [],
-    "name": "RoundFullError",
+    "name": "RoundInProgress",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "RoundInProgressError",
+    "name": "RoundIsFull",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "RoundNotRefundableError",
+    "name": "RoundNotRefundable",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "RoundNotStartedError",
+    "name": "RoundNotStarted",
     "type": "error"
   },
   {
@@ -138,7 +168,13 @@
     "type": "error"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
     "name": "ValueBelowMinimum",
     "type": "error"
   },
@@ -240,6 +276,45 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "cancelReturnNumerator",
+        "type": "uint32"
+      }
+    ],
+    "name": "CancelReturnNumeratorUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "hashProducer",
+        "type": "address"
+      }
+    ],
+    "name": "HashProducerUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "introBlocks",
+        "type": "uint64"
+      }
+    ],
+    "name": "IntroBlocksUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "user",
@@ -266,9 +341,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint8",
-        "name": "action",
-        "type": "uint8"
+        "internalType": "uint64",
+        "name": "nonce",
+        "type": "uint64"
       },
       {
         "indexed": true,
@@ -278,12 +353,31 @@
       },
       {
         "indexed": false,
+        "internalType": "uint8",
+        "name": "action",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
       }
     ],
     "name": "LiquidityChangeQueued",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "nonce",
+        "type": "uint64"
+      }
+    ],
+    "name": "LiquidityQueueCleared",
     "type": "event"
   },
   {
@@ -328,6 +422,32 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newThreshold",
+        "type": "uint256"
+      }
+    ],
+    "name": "LowLiquidityThresholdUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "newMaxExposure",
+        "type": "uint64"
+      }
+    ],
+    "name": "MaxExposureUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
@@ -341,6 +461,19 @@
       }
     ],
     "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "reducedIntroBlocks",
+        "type": "uint32"
+      }
+    ],
+    "name": "ReducedIntroBlocksUpdated",
     "type": "event"
   },
   {
@@ -382,6 +515,12 @@
         "internalType": "uint64",
         "name": "deadIndex",
         "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "proof",
+        "type": "bytes32"
       }
     ],
     "name": "RoundEnded",
@@ -420,6 +559,12 @@
         "internalType": "uint64",
         "name": "hashIndex",
         "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "liquidity",
+        "type": "uint256"
       }
     ],
     "name": "RoundStarted",
@@ -732,25 +877,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
-    ],
-    "name": "getLastUpdated",
-    "outputs": [
-      {
-        "internalType": "uint64",
-        "name": "",
-        "type": "uint64"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "getLiquidityQueue",
     "outputs": [
@@ -782,6 +908,32 @@
   },
   {
     "inputs": [],
+    "name": "getLiquidityQueueLength",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getLiquidityQueueNonce",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getLootTable",
     "outputs": [
       {
@@ -798,9 +950,9 @@
     "name": "getLowLiquidityThreshold",
     "outputs": [
       {
-        "internalType": "uint128",
+        "internalType": "uint256",
         "name": "",
-        "type": "uint128"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -811,9 +963,9 @@
     "name": "getMaxExposureNumerator",
     "outputs": [
       {
-        "internalType": "uint128",
+        "internalType": "uint64",
         "name": "",
-        "type": "uint128"
+        "type": "uint64"
       }
     ],
     "stateMutability": "view",
@@ -947,25 +1099,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
-    ],
-    "name": "getShares",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "getStagedBalance",
     "outputs": [
@@ -994,6 +1127,44 @@
   {
     "inputs": [],
     "name": "getTotalShares",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserLiquidityQueueNonce",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserShares",
     "outputs": [
       {
         "internalType": "uint256",
@@ -1047,6 +1218,11 @@
       {
         "internalType": "contract IERC20",
         "name": "_toRescue",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_to",
         "type": "address"
       }
     ],
@@ -1154,9 +1330,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint128",
+        "internalType": "uint64",
         "name": "_numerator",
-        "type": "uint128"
+        "type": "uint64"
       }
     ],
     "name": "setMaxExposure",

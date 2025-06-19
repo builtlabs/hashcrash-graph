@@ -22,17 +22,29 @@
   },
   {
     "inputs": [],
-    "name": "AlreadyReferredError",
+    "name": "AlreadyReferred",
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "InvalidAddressError",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "InvalidAddress",
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "InvalidValueError",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "InvalidValue",
     "type": "error"
   },
   {
@@ -43,11 +55,6 @@
   {
     "inputs": [],
     "name": "NoEtherToWrap",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "NotCurrentSeasonError",
     "type": "error"
   },
   {
@@ -81,6 +88,11 @@
       }
     ],
     "name": "SafeERC20FailedOperation",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SeasonNotStarted",
     "type": "error"
   },
   {

@@ -16,6 +16,7 @@ import {
   accrueVolumePoints,
   getBet,
   getLootTable,
+  getLootTableContract,
   getOrCreateBet,
   getOrCreateHashCrash,
   getOrCreateLootTable,
@@ -37,6 +38,7 @@ export function handleRoundStarted(event: RoundStartedEvent): void {
   const round = getOrCreateRound(hashcrash, event.params.roundHash);
   round.hashIndex = event.params.hashIndex;
   round.startBlock = event.params.startBlock;
+  round.initialLiquidity = event.params.liquidity;
   round.save();
 }
 
@@ -52,10 +54,17 @@ export function handleRoundEnded(event: RoundEndedEvent): void {
   const hashcrash = getOrCreateHashCrash(event.address);
 
   const lootTable = getLootTable(hashcrash.lootTable);
+  const lootTableContract = getLootTableContract(lootTable);
 
   const round = getOrCreateRound(hashcrash, event.params.roundHash);
   round.salt = event.params.roundSalt;
   round.deadIndex = event.params.deadIndex;
+  round.proof = event.params.proof;
+  round.hashes = lootTableContract.getRoundBlockHashes(
+    event.params.proof,
+    event.params.deadIndex,
+    round.startBlock,
+  )
 
   if (event.params.deadIndex == VALUES.ZERO) {
     round.multiplier = VALUES.ZERO;
