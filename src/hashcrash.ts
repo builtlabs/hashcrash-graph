@@ -39,6 +39,7 @@ export function handleRoundStarted(event: RoundStartedEvent): void {
   round.hashIndex = event.params.hashIndex;
   round.startBlock = event.params.startBlock;
   round.initialLiquidity = event.params.liquidity;
+  round.startTransactionHash = event.transaction.hash;
   round.save();
 }
 
@@ -60,6 +61,7 @@ export function handleRoundEnded(event: RoundEndedEvent): void {
   round.deadIndex = event.params.deadIndex;
   round.lootTable = lootTable.id;
   round.proof = event.params.proof;
+  round.endTransactionHash = event.transaction.hash;
 
   if (event.params.deadIndex == VALUES.ZERO) {
     round.multiplier = VALUES.ZERO;
