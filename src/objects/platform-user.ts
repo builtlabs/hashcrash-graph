@@ -38,6 +38,8 @@ export class PlatformUser {
     for (let i = 0; i < this.stats.length; i++) {
       this.stats[i].save();
     }
+
+    this.platformUser.save();
   }
 
   private getOrCreateStats(periodType: string, periodId: string | null): PlatformUserStats {
