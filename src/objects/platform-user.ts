@@ -9,10 +9,13 @@ export class PlatformUser {
 
   constructor(platformInterface: PlatformInterface, user: Address, timestamp: BigInt) {
     this.platformUser = getOrCreatePlatformUser(platformInterface, user);
-    this.stats = [this.getOrCreateStats(PERIOD.LIFETIME, null), this.getOrCreateStats(PERIOD.DAY, formatDateFromTimestamp(timestamp))];
+    this.stats = [
+      this.getOrCreateStats(PERIOD.LIFETIME, null, null),
+      this.getOrCreateStats(PERIOD.DAY, formatDateFromTimestamp(timestamp), null),
+    ];
 
     if (platformInterface.currentSeason != null) {
-      this.stats.push(this.getOrCreateStats(PERIOD.SEASON, platformInterface.currentSeason));
+      this.stats.push(this.getOrCreateStats(PERIOD.SEASON, platformInterface.currentSeason, platformInterface.currentSeason));
     }
   }
 
@@ -42,7 +45,7 @@ export class PlatformUser {
     this.platformUser.save();
   }
 
-  private getOrCreateStats(periodType: string, periodId: string | null): PlatformUserStats {
+  private getOrCreateStats(periodType: string, periodId: string | null, seasonId: string | null): PlatformUserStats {
     let id = this.platformUser.id + "-" + periodType;
     if (periodId !== null) {
       id += "-" + periodId;
@@ -54,6 +57,7 @@ export class PlatformUser {
       stats.platformUser = this.platformUser.id;
       stats.periodType = periodType;
       stats.periodId = periodId;
+      stats.season = seasonId;
 
       stats.referralCount = VALUES.ZERO;
 

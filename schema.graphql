@@ -235,6 +235,8 @@ type PlatformUserStats @entity {
   periodType: PERIOD_TYPE!
   periodId: String
 
+  season: Season
+
   referralCount: BigInt!
 }
 
