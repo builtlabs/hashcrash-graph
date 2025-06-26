@@ -84,6 +84,8 @@ export function getOrCreateLiquidity(hashcrash: HashCrash): LiquidityData {
   if (liquidity == null) {
     liquidity = new LiquidityData(id);
     liquidity.hashcrash = hashcrash.id;
+    liquidity.maxExposureNumerator = VALUES.ZERO;
+    liquidity.lowLiquidityThreshold = VALUES.ZERO;
     liquidity.save();
   }
 

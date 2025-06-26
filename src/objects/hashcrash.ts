@@ -1,6 +1,6 @@
 import { Address } from "@graphprotocol/graph-ts";
 import { HashCrash } from "../../generated/schema";
-import { addressToId } from "../helpers";
+import { addressToId, VALUES } from "../helpers";
 import { HashCrash as HashCrashContract } from "../../generated/HashCrashGrind/HashCrash";
 import { getOrCreateToken } from "./common";
 import { getOrCreateLootTable } from "./loot-table";
@@ -28,6 +28,10 @@ export function getOrCreateHashCrash(address: Address): HashCrash {
     hashcrash.lootTable = getOrCreateLootTable(contract.getLootTable()).id;
     hashcrash.liquidity = getOrCreateLiquidity(hashcrash).id;
     hashcrash.active = false;
+    hashcrash.hashProducer = VALUES.ZERO_ADDRESS;
+    hashcrash.introBlocks = VALUES.ZERO;
+    hashcrash.reducedIntroBlocks = VALUES.ZERO;
+    hashcrash.cancelReturnNumerator = VALUES.ZERO;
     hashcrash.save();
   }
 

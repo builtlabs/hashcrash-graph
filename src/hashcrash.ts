@@ -9,16 +9,22 @@ import {
   BetCancelled as BetCancelledEvent,
   ActiveUpdated as ActiveUpdatedEvent,
   LootTableUpdated as LootTableUpdatedEvent,
+  IntroBlocksUpdated as IntroBlocksUpdatedEvent,
+  HashProducerUpdated as HashProducerUpdatedEvent,
+  ReducedIntroBlocksUpdated as ReducedIntroBlocksUpdatedEvent,
+  CancelReturnNumeratorUpdated as CancelReturnNumeratorUpdatedEvent,
   LiquidityAdded as LiquidityAddedEvent,
   LiquidityRemoved as LiquidityRemovedEvent,
+  MaxExposureUpdated as MaxExposureUpdatedEvent,
+  LowLiquidityThresholdUpdated as LowLiquidityThresholdUpdatedEvent,
 } from "./../generated/HashCrashGrind/HashCrash";
 import {
   accrueVolumePoints,
   getBet,
   getLootTable,
-  getLootTableContract,
   getOrCreateBet,
   getOrCreateHashCrash,
+  getOrCreateLiquidity,
   getOrCreateLootTable,
   getOrCreatePlayer,
   getOrCreateRound,
@@ -160,13 +166,37 @@ export function handleLootTableUpdated(event: LootTableUpdatedEvent): void {
   hashcrash.save();
 }
 
+export function handleIntroBlocksUpdated(event: IntroBlocksUpdatedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+  hashcrash.introBlocks = event.params.introBlocks;
+  hashcrash.save();
+}
+
+export function handleHashProducerUpdated(event: HashProducerUpdatedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+  hashcrash.hashProducer = event.params.hashProducer;
+  hashcrash.save();
+}
+
+export function handleReducedIntroBlocksUpdated(event: ReducedIntroBlocksUpdatedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+  hashcrash.reducedIntroBlocks = event.params.reducedIntroBlocks;
+  hashcrash.save();
+}
+
+export function handleCancelReturnNumeratorUpdated(event: CancelReturnNumeratorUpdatedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+  hashcrash.cancelReturnNumerator = event.params.cancelReturnNumerator;
+  hashcrash.save();
+}
+
 export function handleLiquidityAdded(event: LiquidityAddedEvent): void {
   const hashcrash = getOrCreateHashCrash(event.address);
 
   const hashCrashStats = new HashCrashStats(hashcrash, event.block.timestamp);
   hashCrashStats.registerUserAddress(event.params.user);
   hashCrashStats.save();
-  
+
   const userPoints = new Points(hashcrash, getOrCreateWallet(event.params.user), event.block.timestamp);
 
   const liquidity = new Liquidity(hashcrash, event.block.timestamp);
@@ -197,7 +227,23 @@ export function handleLiquidityRemoved(event: LiquidityRemovedEvent): void {
   const liquidityProvider = new LiquidityProvider(hashcrash, liquidity.id, event.params.user, event.block.timestamp);
   liquidityProvider.handleWithdrawal(event.params.shareDelta, event.params.tokenDelta);
   liquidityProvider.save();
-  
+
   userPoints.accrueLiquidityPoints(liquidityProvider, event.block.number);
   userPoints.save();
+}
+
+export function handleMaxExposureUpdated(event: MaxExposureUpdatedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+
+  const liquidity = getOrCreateLiquidity(hashcrash);
+  liquidity.maxExposureNumerator = event.params.newMaxExposure;
+  liquidity.save();
+}
+
+export function handleLowLiquidityThresholdUpdated(event: LowLiquidityThresholdUpdatedEvent): void {
+  const hashcrash = getOrCreateHashCrash(event.address);
+
+  const liquidity = getOrCreateLiquidity(hashcrash);
+  liquidity.lowLiquidityThreshold = event.params.newThreshold;
+  liquidity.save();
 }

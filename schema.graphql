@@ -37,15 +37,16 @@ type UniqueChecker @entity {
 type HashCrash @entity {
   id: ID!
 
+  active: Boolean!
+  hashProducer: Bytes!
+  introBlocks: BigInt!
+  reducedIntroBlocks: BigInt!
+  cancelReturnNumerator: BigInt!
+
   token: Token!
   lootTable: LootTable!
   liquidity: Liquidity!
 
-  active: Boolean!
-  # hashProducer: Bytes! TODO
-  # introBlocks: BigInt!
-  # reducedIntroBlocks: BigInt!
-  # cancelReturnNumerator: BigInt!
   currentSeason: Season
 
   rounds: [Round!]! @derivedFrom(field: "hashcrash")
@@ -152,8 +153,8 @@ type Liquidity @entity {
 
   hashcrash: HashCrash!
 
-  # maxExposure: BigInt TODO
-  # lowLiquidityThreshold: BigInt
+  maxExposureNumerator: BigInt
+  lowLiquidityThreshold: BigInt
 
   stats: [LiquidityStats!]! @derivedFrom(field: "liquidity")
   providers: [LiquidityProvider!]! @derivedFrom(field: "liquidity")
@@ -302,7 +303,7 @@ type Points @entity {
 
   periodType: PERIOD_TYPE!
   periodId: String
-  
+
   volume: BigInt! # unit: ETH
   referredVolume: BigInt! # unit: ETH
   accruedLiquidity: BigInt! # unit: ETH * Blocks

@@ -90,10 +90,22 @@ dataSources:
           handler: handleActiveUpdated
         - event: LootTableUpdated(address)
           handler: handleLootTableUpdated
+        - event: IntroBlocksUpdated(uint64)
+          handler: handleIntroBlocksUpdated
+        - event: HashProducerUpdated(address)
+          handler: handleHashProducerUpdated
+        - event: ReducedIntroBlocksUpdated(uint32)
+          handler: handleReducedIntroBlocksUpdated
+        - event: CancelReturnNumeratorUpdated(uint32)
+          handler: handleCancelReturnNumeratorUpdated
         - event: LiquidityAdded(indexed address,uint256,uint256)
           handler: handleLiquidityAdded
         - event: LiquidityRemoved(indexed address,uint256,uint256)
           handler: handleLiquidityRemoved
+        - event: MaxExposureUpdated(uint64)
+          handler: handleMaxExposureUpdated
+        - event: LowLiquidityThresholdUpdated(uint256)
+          handler: handleLowLiquidityThresholdUpdated
       file: ./src/hashcrash.ts
   - kind: ethereum
     name: HashCrashGrind
@@ -142,8 +154,20 @@ dataSources:
           handler: handleActiveUpdated
         - event: LootTableUpdated(address)
           handler: handleLootTableUpdated
+        - event: IntroBlocksUpdated(uint64)
+          handler: handleIntroBlocksUpdated
+        - event: HashProducerUpdated(address)
+          handler: handleHashProducerUpdated
+        - event: ReducedIntroBlocksUpdated(uint32)
+          handler: handleReducedIntroBlocksUpdated
+        - event: CancelReturnNumeratorUpdated(uint32)
+          handler: handleCancelReturnNumeratorUpdated
         - event: LiquidityAdded(indexed address,uint256,uint256)
           handler: handleLiquidityAdded
         - event: LiquidityRemoved(indexed address,uint256,uint256)
           handler: handleLiquidityRemoved
+        - event: MaxExposureUpdated(uint64)
+          handler: handleMaxExposureUpdated
+        - event: LowLiquidityThresholdUpdated(uint256)
+          handler: handleLowLiquidityThresholdUpdated
       file: ./src/hashcrash.ts
