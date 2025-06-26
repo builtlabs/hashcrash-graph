@@ -119,7 +119,7 @@ type Round @entity {
   hashIndex: BigInt!
   startBlock: BigInt!
 
-  # usedLiquidity: BigInt! TODO
+  usedLiquidity: BigInt!
   initialLiquidity: BigInt!
 
   salt: Bytes

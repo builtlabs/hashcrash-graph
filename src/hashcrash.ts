@@ -94,8 +94,7 @@ export function handleRoundEnded(event: RoundEndedEvent): void {
 
       // On Win
       if (bets[i].cashoutIndex.lt(event.params.deadIndex)) {
-        const multiplied = bets[i].amount.times(bets[i].multiplier);
-        const won = multiplied.div(BigInt.fromI32(1000000));
+        const won = bets[i].amount.times(bets[i].multiplier).div(VALUES.MULTIPLIER_DENOMINATOR);
 
         hashcrashStats.registerWin(won);
         playerStats.handleBetWon(won, won.minus(bets[i].amount), bets[i].multiplier);
@@ -130,6 +129,9 @@ export function handleBetPlaced(event: BetPlacedEvent): void {
   bet.multiplier = lootTable.multipliers[event.params.cashoutIndex.toI32()];
   bet.cashoutIndex = event.params.cashoutIndex;
   bet.save();
+
+  round.usedLiquidity = round.usedLiquidity.plus(bet.amount.times(bet.multiplier).div(VALUES.MULTIPLIER_DENOMINATOR));
+  round.save();
 }
 
 export function handleBetCashoutUpdated(event: BetCashoutUpdatedEvent): void {
@@ -138,9 +140,15 @@ export function handleBetCashoutUpdated(event: BetCashoutUpdatedEvent): void {
   const lootTable = getLootTable(hashcrash.lootTable);
 
   const bet = getBet(round, event.params.index);
+
+  round.usedLiquidity = round.usedLiquidity.minus(bet.amount.times(bet.multiplier).div(VALUES.MULTIPLIER_DENOMINATOR))
+
   bet.multiplier = lootTable.multipliers[event.params.cashoutIndex.toI32()];
   bet.cashoutIndex = event.params.cashoutIndex;
-  bet.save();
+  bet.save();  
+  
+  round.usedLiquidity = round.usedLiquidity.plus(bet.amount.times(bet.multiplier).div(VALUES.MULTIPLIER_DENOMINATOR));
+  round.save();
 }
 
 export function handleBetCancelled(event: BetCancelledEvent): void {
@@ -150,6 +158,9 @@ export function handleBetCancelled(event: BetCancelledEvent): void {
   const bet = getBet(round, event.params.index);
   bet.cancelled = true;
   bet.save();
+
+  round.usedLiquidity = round.usedLiquidity.minus(bet.amount.times(bet.multiplier).div(VALUES.MULTIPLIER_DENOMINATOR));
+  round.save();
 }
 
 export function handleActiveUpdated(event: ActiveUpdatedEvent): void {

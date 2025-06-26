@@ -11,4 +11,5 @@ export namespace VALUES {
   export const ZERO = BigInt.fromI32(0);
   export const ONE = BigInt.fromI32(1);
   export const DENOMINATOR = BigInt.fromI32(10000);
+  export const MULTIPLIER_DENOMINATOR = BigInt.fromI32(1000000);
 }
