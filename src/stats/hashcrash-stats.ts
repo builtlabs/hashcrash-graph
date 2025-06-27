@@ -1,6 +1,6 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { HashCrash, HashCrashStats as Stats, UniqueChecker } from "../../generated/schema";
-import { addressToId, formatDateFromTimestamp, PERIOD, VALUES  } from "../helpers";
+import { addressToId, format15MinBucket, formatDateFromTimestamp, PERIOD, VALUES } from "../helpers";
 
 export class HashCrashStats {
   private stats: Stats[] = [];
@@ -9,6 +9,7 @@ export class HashCrashStats {
     this.stats = [
       this.getOrCreateStats(hashcrash, PERIOD.LIFETIME, null),
       this.getOrCreateStats(hashcrash, PERIOD.DAY, formatDateFromTimestamp(timestamp)),
+      this.getOrCreateStats(hashcrash, PERIOD.FIFTEEN_MINUTES, format15MinBucket(timestamp)),
     ];
 
     if (hashcrash.currentSeason != null) {

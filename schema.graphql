@@ -2,6 +2,7 @@ enum PERIOD_TYPE {
   LIFETIME
   SEASON
   DAY
+  FIFTEEN_MINUTES
 }
 
 type Wallet @entity {
@@ -168,6 +169,11 @@ type LiquidityStats @entity {
   periodId: String
 
   shares: BigInt!
+  balance: BigInt!
+
+  sharePriceHigh: BigInt!
+  sharePrice: BigInt!
+  sharePriceLow: BigInt!
 
   depositCount: BigInt!
   depositVolume: BigInt!

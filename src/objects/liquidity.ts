@@ -1,15 +1,22 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { HashCrash, Liquidity as LiquidityData, LiquidityStats } from "../../generated/schema";
-import { formatDateFromTimestamp, PERIOD, VALUES } from "../helpers";
+import { HashCrash as HashCrashContract } from "../../generated/HashCrashWeth/HashCrash";
+import { format15MinBucket, formatDateFromTimestamp, PERIOD, VALUES } from "../helpers";
 
 export class Liquidity {
+  private contract: HashCrashContract;
   private wrapped: LiquidityData;
-  private stats: LiquidityStats[]= [];
+  private stats: LiquidityStats[] = [];
 
   constructor(hashCrash: HashCrash, timestamp: BigInt) {
+    this.contract = HashCrashContract.bind(Address.fromString(hashCrash.id));
     this.wrapped = getOrCreateLiquidity(hashCrash);
 
-    this.stats = [this.getOrCreateStats(PERIOD.LIFETIME, null), this.getOrCreateStats(PERIOD.DAY, formatDateFromTimestamp(timestamp))];
+    this.stats = [
+      this.getOrCreateStats(PERIOD.LIFETIME, null),
+      this.getOrCreateStats(PERIOD.DAY, formatDateFromTimestamp(timestamp)),
+      this.getOrCreateStats(PERIOD.FIFTEEN_MINUTES, format15MinBucket(timestamp)),
+    ];
 
     if (hashCrash.currentSeason != null) {
       this.stats.push(this.getOrCreateStats(PERIOD.SEASON, hashCrash.currentSeason));
@@ -18,6 +25,29 @@ export class Liquidity {
 
   get id(): string {
     return this.wrapped.id;
+  }
+
+  public updateSharePrice(): void {
+    const balance = this.contract.getAvailableBalance();
+    const totalShares = this.contract.getTotalShares();
+
+    const sharePrice = totalShares.isZero() ? VALUES.ZERO : balance.times(VALUES.WEI).div(totalShares);
+
+    for (let i = 0; i < this.stats.length; i++) {
+      this.stats[i].balance = balance;
+      this.stats[i].shares = totalShares;
+      this.stats[i].sharePrice = sharePrice;
+
+      if (this.stats[i].sharePriceHigh.isZero() || this.stats[i].sharePriceHigh.lt(sharePrice)) {
+        this.stats[i].sharePriceHigh = sharePrice;
+      }
+
+      if( this.stats[i].sharePriceLow.isZero() || this.stats[i].sharePriceLow.gt(sharePrice)) {
+        this.stats[i].sharePriceLow = sharePrice;
+      }
+
+      this.stats[i].save();
+    }
   }
 
   public handleDeposit(shares: BigInt, volume: BigInt): void {
@@ -56,6 +86,10 @@ export class Liquidity {
       stats.periodId = periodId;
 
       stats.shares = VALUES.ZERO;
+      stats.balance = VALUES.ZERO;
+      stats.sharePriceHigh = VALUES.ZERO;
+      stats.sharePrice = VALUES.ZERO;
+      stats.sharePriceLow = VALUES.ZERO;
       stats.depositCount = VALUES.ZERO;
       stats.depositVolume = VALUES.ZERO;
       stats.withdrawalCount = VALUES.ZERO;
@@ -69,7 +103,7 @@ export class Liquidity {
 
 export function getLiquidity(id: string): LiquidityData {
   const liquidity = LiquidityData.load(id);
-  
+
   if (liquidity == null) {
     throw new Error(`Liquidity with id ${id} not found`);
   }

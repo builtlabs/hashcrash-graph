@@ -12,4 +12,5 @@ export namespace VALUES {
   export const ONE = BigInt.fromI32(1);
   export const DENOMINATOR = BigInt.fromI32(10000);
   export const MULTIPLIER_DENOMINATOR = BigInt.fromI32(1000000);
+  export const WEI = BigInt.fromI32(10).pow(18 as u8);
 }

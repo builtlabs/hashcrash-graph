@@ -1,4 +1,3 @@
-import { BigInt } from "@graphprotocol/graph-ts";
 import {
   RoundStarted as RoundStartedEvent,
   RoundAccelerated as RoundAcceleratedEvent,
@@ -104,6 +103,10 @@ export function handleRoundEnded(event: RoundEndedEvent): void {
     }
   }
 
+  const liquidity = new Liquidity(hashcrash, event.block.timestamp);
+  liquidity.updateSharePrice();
+  liquidity.save();
+
   hashcrashStats.save();
 }
 
@@ -141,12 +144,12 @@ export function handleBetCashoutUpdated(event: BetCashoutUpdatedEvent): void {
 
   const bet = getBet(round, event.params.index);
 
-  round.usedLiquidity = round.usedLiquidity.minus(bet.amount.times(bet.multiplier).div(VALUES.MULTIPLIER_DENOMINATOR))
+  round.usedLiquidity = round.usedLiquidity.minus(bet.amount.times(bet.multiplier).div(VALUES.MULTIPLIER_DENOMINATOR));
 
   bet.multiplier = lootTable.multipliers[event.params.cashoutIndex.toI32()];
   bet.cashoutIndex = event.params.cashoutIndex;
-  bet.save();  
-  
+  bet.save();
+
   round.usedLiquidity = round.usedLiquidity.plus(bet.amount.times(bet.multiplier).div(VALUES.MULTIPLIER_DENOMINATOR));
   round.save();
 }
@@ -212,6 +215,7 @@ export function handleLiquidityAdded(event: LiquidityAddedEvent): void {
 
   const liquidity = new Liquidity(hashcrash, event.block.timestamp);
   liquidity.handleDeposit(event.params.shareDelta, event.params.tokenDelta);
+  liquidity.updateSharePrice();
   liquidity.save();
 
   const liquidityProvider = new LiquidityProvider(hashcrash, liquidity.id, event.params.user, event.block.timestamp);
@@ -233,6 +237,7 @@ export function handleLiquidityRemoved(event: LiquidityRemovedEvent): void {
 
   const liquidity = new Liquidity(hashcrash, event.block.timestamp);
   liquidity.handleWithdrawal(event.params.shareDelta, event.params.tokenDelta);
+  liquidity.updateSharePrice();
   liquidity.save();
 
   const liquidityProvider = new LiquidityProvider(hashcrash, liquidity.id, event.params.user, event.block.timestamp);
