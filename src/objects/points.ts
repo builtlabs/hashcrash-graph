@@ -25,15 +25,15 @@ export class Points {
     }
   }
 
-  public incrementVolume(volume: BigInt): void {
+  public incrementVolume(volume: BigInt, timestamp: BigInt): void {
     for (let i = 0; i < this.stats.length; i++) {
-      this.stats[i].volume = this.stats[i].volume.plus(volume);
+      this.stats[i].volume = this.stats[i].volume.plus(volume.times(volumeMultiplier(timestamp)));
     }
   }
 
-  public incrementReferredVolume(volume: BigInt): void {
+  public incrementReferredVolume(volume: BigInt, timestamp: BigInt): void {
     for (let i = 0; i < this.stats.length; i++) {
-      this.stats[i].referredVolume = this.stats[i].referredVolume.plus(volume);
+      this.stats[i].referredVolume = this.stats[i].referredVolume.plus(volume.times(volumeMultiplier(timestamp)));
     }
   }
 
@@ -113,7 +113,7 @@ export function accrueVolumePoints(hashcrash: HashCrash, player: Player, volume:
   const wallet = getWallet(player.wallet);
 
   const user = new Points(hashcrash, wallet, timestamp);
-  user.incrementVolume(volume);
+  user.incrementVolume(volume, timestamp);
   user.save();
 
   const platformUser = getPlatformUserOrNull(wallet.platformUser);
@@ -124,11 +124,11 @@ export function accrueVolumePoints(hashcrash: HashCrash, player: Player, volume:
     let rate = getRewardRate(platformInterface, depth);
     let referer = getPlatformUserOrNull(platformUser.referredBy);
 
-    while (referer != null && rate.gt(BigInt.fromI32(0))) {
+    while (referer != null && rate.gt(VALUES.ZERO)) {
       const referredVolume = applyRate(volume, rate);
 
       const referredPoints = new Points(hashcrash, getWallet(referer.wallet), timestamp);
-      referredPoints.incrementReferredVolume(referredVolume);
+      referredPoints.incrementReferredVolume(referredVolume, timestamp);
       referredPoints.save();
 
       depth++;
@@ -140,7 +140,7 @@ export function accrueVolumePoints(hashcrash: HashCrash, player: Player, volume:
 
 function getRewardRate(platformInterface: PlatformInterface, depth: i32): BigInt {
   if (platformInterface.rewardRates.length <= depth) {
-    return BigInt.fromI32(0);
+    return VALUES.ZERO;
   }
 
   return platformInterface.rewardRates[depth];
@@ -148,5 +148,14 @@ function getRewardRate(platformInterface: PlatformInterface, depth: i32): BigInt
 
 function applyRate(value: BigInt, rate: BigInt): BigInt {
   const multiplied = value.times(rate);
-  return multiplied.div(BigInt.fromI32(10000));
+  return multiplied.div(VALUES.DENOMINATOR);
+}
+
+function volumeMultiplier(timestamp: BigInt): BigInt {
+  // Weekend one:
+  if (timestamp.ge(BigInt.fromI64(1751036400)) && timestamp.lt(BigInt.fromI64(1751270400))) {
+    return VALUES.TWO;
+  }
+
+  return VALUES.ONE;
 }

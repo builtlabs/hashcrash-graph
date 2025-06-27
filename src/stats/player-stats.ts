@@ -19,10 +19,10 @@ export class PlayerStats {
   public handleBetPlaced(roundId: string, amount: BigInt, multiplierUsed: BigInt): void {
     for (let i = 0; i < this.stats.length; i++) {
       if (this.isUniqueRound(roundId, this.stats[i].id)) {
-        this.stats[i].roundCount = this.stats[i].roundCount.plus(BigInt.fromI32(1));
+        this.stats[i].roundCount = this.stats[i].roundCount.plus(VALUES.ONE);
       }
 
-      this.stats[i].betCount = this.stats[i].betCount.plus(BigInt.fromI32(1));
+      this.stats[i].betCount = this.stats[i].betCount.plus(VALUES.ONE);
       this.stats[i].betVolume = this.stats[i].betVolume.plus(amount);
 
       if (this.stats[i].largestBet.lt(amount)) {
@@ -37,7 +37,7 @@ export class PlayerStats {
 
   public handleBetWon(payout: BigInt, profit: BigInt, multiplierWon: BigInt): void {
     for (let i = 0; i < this.stats.length; i++) {
-      this.stats[i].winCount = this.stats[i].winCount.plus(BigInt.fromI32(1));
+      this.stats[i].winCount = this.stats[i].winCount.plus(VALUES.ONE);
       this.stats[i].payoutVolume = this.stats[i].payoutVolume.plus(payout);
       this.stats[i].profitVolume = this.stats[i].profitVolume.plus(profit);
 
