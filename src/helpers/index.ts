@@ -27,7 +27,7 @@ export function formatDateFromTimestamp(timestamp: BigInt): string {
   const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
   const year = date.getUTCFullYear().toString();
 
-  return `${day}-${month}-${year}`;
+  return `${year}-${month}-${day}`;
 }
 
 export function format15MinBucket(timestamp: BigInt): string {
@@ -48,5 +48,5 @@ export function format15MinBucket(timestamp: BigInt): string {
   const hour = date.getUTCHours().toString().padStart(2, "0");
   const mins = date.getUTCMinutes().toString().padStart(2, "0");
 
-  return `${day}-${month}-${year} ${hour}:${mins}`;
+  return `${year}-${month}-${day} ${hour}:${mins}`;
 }
