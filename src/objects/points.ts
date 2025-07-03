@@ -13,15 +13,12 @@ export class Points {
   private wallet: Wallet;
   private stats: PointsStats[] = [];
 
-  constructor(hashcrash: HashCrash, wallet: Wallet, timestamp: BigInt) {
+  constructor(hashcrash: HashCrash, wallet: Wallet) {
     this.wallet = wallet;
-    this.stats = [
-      this.getOrCreateStats(PERIOD.LIFETIME, null, null),
-      this.getOrCreateStats(PERIOD.DAY, formatDateFromTimestamp(timestamp), null),
-    ];
+    this.stats = [];
 
     if (hashcrash.currentSeason != null) {
-      this.stats.push(this.getOrCreateStats(PERIOD.SEASON, hashcrash.currentSeason, hashcrash.currentSeason));
+      this.stats.push(this.getOrCreateStats(PERIOD.SEASON, hashcrash.currentSeason));
     }
   }
 
@@ -62,10 +59,10 @@ export class Points {
     }
   }
 
-  private getOrCreateStats(periodType: string, periodId: string | null, seasonId: string | null): PointsStats {
+  private getOrCreateStats(periodType: string, seasonId: string | null): PointsStats {
     let id = this.wallet.id + "-" + periodType;
-    if (periodId !== null) {
-      id += "-" + periodId;
+    if (seasonId !== null) {
+      id += "-" + seasonId;
     }
 
     let stats = PointsStats.load(id);
@@ -74,7 +71,7 @@ export class Points {
 
       stats.wallet = this.wallet.id;
       stats.periodType = periodType;
-      stats.periodId = periodId;
+      stats.periodId = seasonId;
       stats.season = seasonId;
 
       stats.volume = VALUES.ZERO;
@@ -112,7 +109,7 @@ export class Points {
 export function accrueVolumePoints(hashcrash: HashCrash, player: Player, volume: BigInt, timestamp: BigInt): void {
   const wallet = getWallet(player.wallet);
 
-  const user = new Points(hashcrash, wallet, timestamp);
+  const user = new Points(hashcrash, wallet);
   user.incrementVolume(volume, timestamp);
   user.save();
 
@@ -127,7 +124,7 @@ export function accrueVolumePoints(hashcrash: HashCrash, player: Player, volume:
     while (referer != null && rate.gt(VALUES.ZERO)) {
       const referredVolume = applyRate(volume, rate);
 
-      const referredPoints = new Points(hashcrash, getWallet(referer.wallet), timestamp);
+      const referredPoints = new Points(hashcrash, getWallet(referer.wallet));
       referredPoints.incrementReferredVolume(referredVolume, timestamp);
       referredPoints.save();
 

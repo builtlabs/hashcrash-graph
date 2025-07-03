@@ -39,7 +39,7 @@ export function handleSeasonStarted(event: SeasonStartedEvent): void {
 
     const providers = getLiquidity(hashcrash.liquidity).providers.load();
     for (let j = 0; j < providers.length; j++) {
-      new Points(hashcrash, getWallet(providers[j].wallet), event.block.timestamp);
+      new Points(hashcrash, getWallet(providers[j].wallet));
     }
   }
 }

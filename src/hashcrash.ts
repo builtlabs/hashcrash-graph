@@ -211,7 +211,7 @@ export function handleLiquidityAdded(event: LiquidityAddedEvent): void {
   hashCrashStats.registerUserAddress(event.params.user);
   hashCrashStats.save();
 
-  const userPoints = new Points(hashcrash, getOrCreateWallet(event.params.user), event.block.timestamp);
+  const userPoints = new Points(hashcrash, getOrCreateWallet(event.params.user));
 
   const liquidity = new Liquidity(hashcrash, event.block.timestamp);
   liquidity.handleDeposit(event.params.shareDelta, event.params.tokenDelta);
@@ -233,7 +233,7 @@ export function handleLiquidityRemoved(event: LiquidityRemovedEvent): void {
   hashCrashStats.registerUserAddress(event.params.user);
   hashCrashStats.save();
 
-  const userPoints = new Points(hashcrash, getOrCreateWallet(event.params.user), event.block.timestamp);
+  const userPoints = new Points(hashcrash, getOrCreateWallet(event.params.user));
 
   const liquidity = new Liquidity(hashcrash, event.block.timestamp);
   liquidity.handleWithdrawal(event.params.shareDelta, event.params.tokenDelta);
