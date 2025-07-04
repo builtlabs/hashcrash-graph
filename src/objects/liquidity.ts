@@ -2,6 +2,7 @@ import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { HashCrash, Liquidity as LiquidityData, LiquidityStats } from "../../generated/schema";
 import { HashCrash as HashCrashContract } from "../../generated/HashCrashWeth/HashCrash";
 import { format15MinBucket, formatDateFromTimestamp, PERIOD, VALUES } from "../helpers";
+import { ethToUSDC } from "../helpers/quote";
 
 export class Liquidity {
   private contract: HashCrashContract;
@@ -32,18 +33,30 @@ export class Liquidity {
     const totalShares = this.contract.getTotalShares();
 
     const sharePrice = totalShares.isZero() ? VALUES.ZERO : balance.times(VALUES.WEI).div(totalShares);
+    const sharePriceUSD = sharePrice.isZero() ? VALUES.ZERO : ethToUSDC(sharePrice);
 
     for (let i = 0; i < this.stats.length; i++) {
       this.stats[i].balance = balance;
       this.stats[i].shares = totalShares;
+
       this.stats[i].sharePrice = sharePrice;
 
       if (this.stats[i].sharePriceHigh.isZero() || this.stats[i].sharePriceHigh.lt(sharePrice)) {
         this.stats[i].sharePriceHigh = sharePrice;
       }
 
-      if( this.stats[i].sharePriceLow.isZero() || this.stats[i].sharePriceLow.gt(sharePrice)) {
+      if (this.stats[i].sharePriceLow.isZero() || this.stats[i].sharePriceLow.gt(sharePrice)) {
         this.stats[i].sharePriceLow = sharePrice;
+      }
+
+      this.stats[i].sharePriceUSD = sharePriceUSD;
+
+      if (this.stats[i].sharePriceHighUSD.isZero() || this.stats[i].sharePriceHighUSD.lt(sharePrice)) {
+        this.stats[i].sharePriceHighUSD = sharePriceUSD;
+      }
+
+      if (this.stats[i].sharePriceLowUSD.isZero() || this.stats[i].sharePriceLowUSD.gt(sharePrice)) {
+        this.stats[i].sharePriceLowUSD = sharePriceUSD;
       }
 
       this.stats[i].save();
@@ -90,6 +103,9 @@ export class Liquidity {
       stats.sharePriceHigh = VALUES.ZERO;
       stats.sharePrice = VALUES.ZERO;
       stats.sharePriceLow = VALUES.ZERO;
+      stats.sharePriceHighUSD = VALUES.ZERO;
+      stats.sharePriceUSD = VALUES.ZERO;
+      stats.sharePriceLowUSD = VALUES.ZERO;
       stats.depositCount = VALUES.ZERO;
       stats.depositVolume = VALUES.ZERO;
       stats.withdrawalCount = VALUES.ZERO;

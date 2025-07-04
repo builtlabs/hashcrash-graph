@@ -219,7 +219,7 @@ export function handleLiquidityAdded(event: LiquidityAddedEvent): void {
   liquidity.save();
 
   const liquidityProvider = new LiquidityProvider(hashcrash, liquidity.id, event.params.user, event.block.timestamp);
-  liquidityProvider.handleDeposit(event.params.shareDelta, event.params.tokenDelta);
+  liquidityProvider.handleDeposit(event.transaction.hash, event.block.timestamp, event.params.shareDelta, event.params.tokenDelta);
   liquidityProvider.save();
 
   userPoints.accrueLiquidityPoints(liquidityProvider, event.block.number);
@@ -241,7 +241,7 @@ export function handleLiquidityRemoved(event: LiquidityRemovedEvent): void {
   liquidity.save();
 
   const liquidityProvider = new LiquidityProvider(hashcrash, liquidity.id, event.params.user, event.block.timestamp);
-  liquidityProvider.handleWithdrawal(event.params.shareDelta, event.params.tokenDelta);
+  liquidityProvider.handleWithdrawal(event.transaction.hash, event.block.timestamp, event.params.shareDelta, event.params.tokenDelta);
   liquidityProvider.save();
 
   userPoints.accrueLiquidityPoints(liquidityProvider, event.block.number);

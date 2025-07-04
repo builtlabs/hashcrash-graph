@@ -5,6 +5,11 @@ enum PERIOD_TYPE {
   FIFTEEN_MINUTES
 }
 
+enum LIQUIDITY_ACTION {
+  DEPOSIT
+  WITHDRAWAL
+}
+
 type Wallet @entity {
   id: ID!
 
@@ -175,6 +180,10 @@ type LiquidityStats @entity {
   sharePrice: BigInt!
   sharePriceLow: BigInt!
 
+  sharePriceHighUSD: BigInt!
+  sharePriceUSD: BigInt!
+  sharePriceLowUSD: BigInt!
+
   depositCount: BigInt!
   depositVolume: BigInt!
 
@@ -189,6 +198,20 @@ type LiquidityProvider @entity {
   liquidity: Liquidity!
 
   stats: [LiquidityProviderStats!]! @derivedFrom(field: "liquidityProvider")
+}
+
+type LiquidityProviderAction @entity {
+  id: ID!
+
+  type: LIQUIDITY_ACTION!
+  liquidityProvider: LiquidityProvider!
+
+  shares: BigInt!
+  amount: BigInt!
+  amountUSD: BigInt!
+
+  transactionHash: Bytes!
+  timestamp: BigInt!
 }
 
 type LiquidityProviderStats @entity {
